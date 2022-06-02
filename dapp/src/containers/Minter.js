@@ -40,7 +40,7 @@ const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
 );
 
 const SOL_MINT_NFT_PROGRAM_ID = new anchor.web3.PublicKey(
-  "9FKLho9AUYScrrKgJbG1mExt5nSgEfk1CNEbR8qBwKTZ"
+  "pL8iWWC6fuoMAnfhCcVVjPQ6XHL2ZzgcD9YyXs78qBc"
 );
 
 const NFT_SYMBOL = "ani-nft";
@@ -119,7 +119,7 @@ const Minter = () => {
     if (!uploadedImage) {
       notification["error"]({
         message: "Error",
-        description: "Something went wrong when updloading the file",
+        description: "Something went wrong when uploading the file",
       });
       return null;
     }

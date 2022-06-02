@@ -14,9 +14,9 @@ const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
   "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
 );
 
-const nftName = "Animal(97): Elephant";
+const nftName = "kek ELEPHANT";
 const nftDescription = "This is animal nft of daniel's elephant.";
-const nftSymbol = "ZooNft";
+const nftSymbol = "Using contract";
 const nftImageUrl = "https://bafybeihshos2fqh5nlz27j26fyvfy3ctwd2t3rgjoslsmmzxzykxhzwbea.ipfs.infura-ipfs.io";
 
 async function ipfs_metadata_upload() {

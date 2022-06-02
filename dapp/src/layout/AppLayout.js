@@ -6,6 +6,7 @@ import logo from "../images/sol.png";
 import { Route, Routes } from "react-router-dom";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import List from "../pages/List";
 
 const AppLayout = () => {
   const { connection } = useConnection();
@@ -22,7 +23,7 @@ const AppLayout = () => {
               </Col>
               <Col>
                 <h1>
-                  <font color="white">Solana NFT Minter</font>
+                  <font color="white">FOMO Bombs Derug</font>
                 </h1>
               </Col>
               <Col flex="auto"></Col>
@@ -34,12 +35,11 @@ const AppLayout = () => {
           <Content>
             {connected && publicKey != null && (
               <Routes>
+                <Route path="/list" element={<List />} />
                 <Route path="/" element={<Minter />} />
                 <Route path="/mint" element={<Minter />} />
               </Routes>
             )}
-            {connected == false && <WrongNetwork />}
-            {connected && publicKey == null && <WrongNetwork />}
           </Content>
           <Footer
             style={{
@@ -47,7 +47,6 @@ const AppLayout = () => {
               bottom: 0,
             }}
           >
-            © 2022 All rights reserved by Daniel Armstrong.
           </Footer>
         </Layout>
       </Col>

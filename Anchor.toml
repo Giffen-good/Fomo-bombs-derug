@@ -1,14 +1,14 @@
 [features]
 seeds = false
 [programs.devnet]
-sol_mint_nft = "9FKLho9AUYScrrKgJbG1mExt5nSgEfk1CNEbR8qBwKTZ"
+sol_mint_nft = "pL8iWWC6fuoMAnfhCcVVjPQ6XHL2ZzgcD9YyXs78qBc"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
 cluster = "devnet"
-wallet = "/home/ksh/.config/solana/id.json"
+wallet = "/Users/chrisrock/.config/solana/fomo.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

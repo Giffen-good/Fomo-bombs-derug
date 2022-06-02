@@ -4,7 +4,7 @@ use anchor_spl::token::mint_to;
 use anchor_spl::token::{MintTo, Token};
 use mpl_token_metadata::instruction::{create_metadata_accounts_v2};
 
-declare_id!("9FKLho9AUYScrrKgJbG1mExt5nSgEfk1CNEbR8qBwKTZ");
+declare_id!("pL8iWWC6fuoMAnfhCcVVjPQ6XHL2ZzgcD9YyXs78qBc");
 
 #[program]
 pub mod sol_mint_nft {
@@ -17,7 +17,7 @@ pub mod sol_mint_nft {
         symbol: String,
         uri: String,
     ) -> Result<()> {
-        msg!("Nft token minting:");
+        msg!("Nft token minting from custom Con:");
         let cpi_program = ctx.accounts.token_program.to_account_info();
         let cpi_accounts = MintTo {
             mint: ctx.accounts.mint.to_account_info(),
@@ -54,6 +54,11 @@ pub mod sol_mint_nft {
                 share: 0,
             },
         ];
+        // let collection = vec![
+        //     mpl_token_metadata::instruction::set_and_verify_collection {
+        //
+        //     }
+        // ];
         let result = invoke(
             &create_metadata_accounts_v2(
                 ctx.accounts.token_metadata_program.key(),
