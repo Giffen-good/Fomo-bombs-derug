@@ -8,6 +8,13 @@
 > Anchor: Solana development framework.
 
 ### 📝 Description
+*in progress..
+
+App provides a technical solution for the recent rug that happened to FOMO bombs. In collaboration with Magic Eden, this app will provide a contract to burn your old FOMO bomb and receive a new FOMO bomb in it's place with a fresh update authority.
+
+App is divided between two parts: 
+- Dapp. UI for the user to exchange their FOMO bombs
+- Contract to manage exchange
 
 ## 📺 DApp
 ### ⚔️ Used technologies
