@@ -1,6 +1,7 @@
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
 import { SolMintNft } from "../target/types/sol_mint_nft";
+import HASHLIST from "../hashlist/devnet_sample_hash_list.json"
 
 import {
   TOKEN_PROGRAM_ID,
@@ -11,12 +12,14 @@ import {
 } from "@solana/spl-token";
 
 const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
-  "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+    "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
 );
-
-const nftName = "kek ELEPHANT";
+const UPDATE_AUTHORITY =  new anchor.web3.PublicKey(
+    "437T5rcFTTguJcU8iWpothVwbre5Cw2hqYDeEn8tyuL3"
+);
+const nftName = "with New Update authority NFT";
 const nftDescription = "This is animal nft of daniel's elephant.";
-const nftSymbol = "Using contract";
+const nftSymbol = "ZooNft";
 const nftImageUrl = "https://bafybeihshos2fqh5nlz27j26fyvfy3ctwd2t3rgjoslsmmzxzykxhzwbea.ipfs.infura-ipfs.io";
 
 async function ipfs_metadata_upload() {
@@ -77,43 +80,43 @@ async function sol_mint_nft() {
 
   const getMetadata = async (mint: anchor.web3.PublicKey): Promise<anchor.web3.PublicKey> => {
     return (await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from("metadata"),
-        TOKEN_METADATA_PROGRAM_ID.toBuffer(),
-        mint.toBuffer(),
-      ],
-      TOKEN_METADATA_PROGRAM_ID
+        [
+          Buffer.from("metadata"),
+          TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+          mint.toBuffer(),
+        ],
+        TOKEN_METADATA_PROGRAM_ID
     ))[0];
   };
 
   const mintKey: anchor.web3.Keypair = anchor.web3.Keypair.generate();
 
   const nftTokenAccount = await getAssociatedTokenAddress(
-    mintKey.publicKey,
-    provider.wallet.publicKey
+      mintKey.publicKey,
+      provider.wallet.publicKey
   );
   console.log("NFT Account: ", nftTokenAccount.toBase58());
 
   const mint_tx = new anchor.web3.Transaction().add(
-    anchor.web3.SystemProgram.createAccount({
-      fromPubkey: provider.wallet.publicKey,
-      newAccountPubkey: mintKey.publicKey,
-      space: MINT_SIZE,
-      programId: TOKEN_PROGRAM_ID,
-      lamports,
-    }),
-    createInitializeMintInstruction(
-      mintKey.publicKey,
-      0,
-      provider.wallet.publicKey,
-      provider.wallet.publicKey,
-    ),
-    createAssociatedTokenAccountInstruction(
-      provider.wallet.publicKey,
-      nftTokenAccount,
-      provider.wallet.publicKey,
-      mintKey.publicKey
-    )
+      anchor.web3.SystemProgram.createAccount({
+        fromPubkey: provider.wallet.publicKey,
+        newAccountPubkey: mintKey.publicKey,
+        space: MINT_SIZE,
+        programId: TOKEN_PROGRAM_ID,
+        lamports,
+      }),
+      createInitializeMintInstruction(
+          mintKey.publicKey,
+          0,
+          provider.wallet.publicKey,
+          provider.wallet.publicKey,
+      ),
+      createAssociatedTokenAccountInstruction(
+          provider.wallet.publicKey,
+          nftTokenAccount,
+          provider.wallet.publicKey,
+          mintKey.publicKey
+      )
   );
   const res = await program.provider.sendAndConfirm(mint_tx, [mintKey]);
   console.log("Mint key: ", mintKey.publicKey.toString());
@@ -123,7 +126,7 @@ async function sol_mint_nft() {
   console.log("Metadata address: ", metadataAddress.toBase58());
 
   // it("Is initialized!", async () => {
-    const tx = await program.rpc.mintNft(
+  const tx = await program.rpc.mintNft(
       mintKey.publicKey,
       nftName,
       nftSymbol,
@@ -132,6 +135,7 @@ async function sol_mint_nft() {
         accounts: {
           mintAuthority: provider.wallet.publicKey,
           mint: mintKey.publicKey,
+          updateAuthority: UPDATE_AUTHORITY,
           tokenAccount: nftTokenAccount,
           tokenProgram: TOKEN_PROGRAM_ID,
           metadata: metadataAddress,
@@ -141,8 +145,8 @@ async function sol_mint_nft() {
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         }
       }
-    );
-    console.log("Your transaction signature", tx);
+  );
+  console.log("Your transaction signature", tx);
   // });
 // });
 };

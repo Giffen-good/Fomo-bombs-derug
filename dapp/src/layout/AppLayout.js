@@ -7,7 +7,7 @@ import { Route, Routes } from "react-router-dom";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import List from "../pages/List";
-
+import Transfer from "../pages/Transfer"
 const AppLayout = () => {
   const { connection } = useConnection();
   const { publicKey, connected } = useWallet();
@@ -35,6 +35,7 @@ const AppLayout = () => {
           <Content>
             {connected && publicKey != null && (
               <Routes>
+                <Route path="/Transfer" element={<Transfer />} />
                 <Route path="/list" element={<List />} />
                 <Route path="/" element={<Minter />} />
                 <Route path="/mint" element={<Minter />} />

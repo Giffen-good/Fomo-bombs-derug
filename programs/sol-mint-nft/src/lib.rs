@@ -17,7 +17,7 @@ pub mod sol_mint_nft {
         symbol: String,
         uri: String,
     ) -> Result<()> {
-        msg!("Nft token minting from custom Con:");
+        msg!("Nft token minting:");
         let cpi_program = ctx.accounts.token_program.to_account_info();
         let cpi_accounts = MintTo {
             mint: ctx.accounts.mint.to_account_info(),
@@ -36,6 +36,7 @@ pub mod sol_mint_nft {
             ctx.accounts.token_metadata_program.to_account_info(),
             ctx.accounts.metadata.to_account_info(),
             ctx.accounts.mint.to_account_info(),
+            ctx.accounts.update_authority.to_account_info(),
             ctx.accounts.mint_authority.to_account_info(),
             ctx.accounts.payer.to_account_info(),
             ctx.accounts.token_program.to_account_info(),
@@ -44,7 +45,7 @@ pub mod sol_mint_nft {
         ];
         let creators = vec![
             mpl_token_metadata::state::Creator {
-                address: creator_key,
+                address: ctx.accounts.update_authority.key(),
                 verified: false,
                 share: 100,
             },
@@ -54,11 +55,7 @@ pub mod sol_mint_nft {
                 share: 0,
             },
         ];
-        // let collection = vec![
-        //     mpl_token_metadata::instruction::set_and_verify_collection {
-        //
-        //     }
-        // ];
+
         let result = invoke(
             &create_metadata_accounts_v2(
                 ctx.accounts.token_metadata_program.key(),
@@ -66,13 +63,13 @@ pub mod sol_mint_nft {
                 ctx.accounts.mint.key(),
                 ctx.accounts.mint_authority.key(),
                 ctx.accounts.payer.key(),
-                ctx.accounts.payer.key(),
+                ctx.accounts.update_authority.key(),
                 name,
                 symbol,
                 uri,
                 Some(creators),
                 1,
-                true,
+                false,
                 false,
                 None,
                 None,
@@ -95,6 +92,10 @@ pub struct MintNFT<'info> {
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut)]
     pub mint: UncheckedAccount<'info>,
+
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account(mut)]
+    pub update_authority: UncheckedAccount<'info>,
 
     pub token_program: Program<'info, Token>,
 

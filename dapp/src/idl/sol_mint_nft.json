@@ -16,6 +16,11 @@
           "isSigner": false
         },
         {
+          "name": "updateAuthority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false

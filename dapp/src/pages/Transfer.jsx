@@ -8,6 +8,7 @@ import {useEffect, useState} from "react";
 import {Card, Row, Col, Button, notification, Result} from 'antd';
 import * as anchor from "@project-serum/anchor";
 import {Program} from "@project-serum/anchor";
+
 import SolMintNftIdl from "../idl/sol_mint_nft.json";
 import {
   createAssociatedTokenAccountInstruction,
@@ -16,11 +17,9 @@ import {
   MINT_SIZE,
   TOKEN_PROGRAM_ID
 } from "@solana/spl-token";
-import * as ipfsClient from "ipfs-http-client";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
-const UPDATE_AUTHORITY =  new anchor.web3.PublicKey(
-  "437T5rcFTTguJcU8iWpothVwbre5Cw2hqYDeEn8tyuL3"
-);
+import * as ipfsClient from "ipfs-http-client";
 
 const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
   "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
@@ -56,6 +55,21 @@ function List() {
   };
   const { connection } = useConnection();
   const wallet = useWallet();
+  const getNftMetadata = async () => {
+    const nftData = []
+    const connection = createConnection()
+    for (let i = 0; i < HASHLIST.length;i++) {
+      const tokenMint = HASHLIST[i];
+      const key = new anchor.web3.PublicKey(
+        tokenMint
+      )
+      const metadataPDA = await Metadata.getPDA(key);
+      const tokenMetadata = await Metadata.load(connection, metadataPDA);
+      console.log(tokenMetadata);
+      nftData.push(tokenMetadata)
+    }
+    return nftData
+  }
   const getAllNftData = async () => {
     try {
       if (wallet.connected === true) {
@@ -113,7 +127,7 @@ function List() {
     for (let i = 0; i < memberNFTs.length;i++) {
 
       const tokenMetadata = memberNFTs[i].metadata.data;
-      const name = `${tokenMetadata.name} V0.2`
+      const name = `${tokenMetadata.name} V0.0`
       const description = tokenMetadata.description
       const uploadedImageUrl = tokenMetadata.image
       const nftSymbol = tokenMetadata.symbol
@@ -133,7 +147,7 @@ function List() {
       )
     }
     setMinting(true);
-    const result = await mint(nftData);
+    const result = await transfer(nftData);
     setMinting(false);
     setMintSuccess(result);
   }
@@ -163,7 +177,7 @@ function List() {
     }
   };
 
-  const mint = async (nftData) => {
+  const transfer = async (nftData) => {
     const provider = new anchor.AnchorProvider(connection, wallet);
     anchor.setProvider(provider);
 
@@ -256,7 +270,6 @@ function List() {
               tokenAccount: nftTokenAccount,
               tokenProgram: TOKEN_PROGRAM_ID,
               metadata: metadataAddress,
-              updateAuthority: UPDATE_AUTHORITY,
               tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
               payer: provider.wallet.publicKey,
               systemProgram: anchor.web3.SystemProgram.programId,
@@ -280,6 +293,8 @@ function List() {
       // get the data from the api
       const d = await getNftTokenData();
       setMemberNFTs(d)
+      const nftFromHashlist = await getNftMetadata();
+      console.log(nftFromHashlist)
     }
     fetchData().catch(console.error);
   },[])
@@ -340,7 +355,7 @@ const NFTProductCard = ({metadata, k}) => {
       >
         <Meta title={name} description={d.description} />
       </Card>
-        {/*{nft.data.uri ? <*/}
+      {/*{nft.data.uri ? <*/}
     </Col>
   )
 }
